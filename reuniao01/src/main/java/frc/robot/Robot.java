@@ -1,6 +1,8 @@
 package frc.robot;
 
 
+import com.revrobotics.CANSparkMax;
+
 // PACOTES
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -28,17 +30,18 @@ public class Robot extends TimedRobot {
 
 // DEFINIÇÃO DO OBJETO PID
   PIDController pidController = new PIDController(0.025, 0.012, 0);
-  pidController.Setsetpoint(4); //ponto de ajuste para o pidController
+
+  pidController.setSetpoint(4); //ponto de ajuste para o pidController
 
 // DEFINIÇÃO DO OBJETO PID UTILIZADO PARA MOVIMENTACAO
   PIDController driveTrainPIDController = new PIDController(0.2, 0.05, 0.1);
 
 // DEFINIÇÃO DOS SPARKMAX UTILIZANDO OS ATRIBUTOS COM AS ID's
-  CANSparkMax Drive0 = new CANSparkMax(Drive0ID);
-  CANSparkMax Drive1 = new CANSparkMax(Drive1ID);
-  CANSparkMax Drive2 = new CANSparkMax(Drive2ID);
-  CANSparkMax Drive3 = new CANSparkMax(Drive3ID);
-  CANSparkMax Arm = new CANSparkMax(ArmID);
+  CANSparkMax Drive0 = new CANSparkMax(Drive0ID, null);
+  CANSparkMax Drive1 = new CANSparkMax(Drive1ID, null);
+  CANSparkMax Drive2 = new CANSparkMax(Drive2ID, null);
+  CANSparkMax Drive3 = new CANSparkMax(Drive3ID, null);
+  CANSparkMax Arm = new CANSparkMax(ArmID, null);
 
   // AGRUPAMENTO DOS MOTORES EM RIGHT E LEFT
   MotorControllerGroup leftDrive = new MotorControllerGroup(Drive0, Drive1);
@@ -68,7 +71,7 @@ public class Robot extends TimedRobot {
     driveTrainPIDController.setTolerance(3); //tolerância para que o pid funcione
     while (!driveTrainPIDController.isAtSetpoint()){ // verifica se o movimento está de acordo com o ponto de ajuste do pid.
       encoderVal = Drive0.getAlternateEncoder().getPosition(); //sobrescreve os valores do encoder até que estejam certos.
-      chassis.arcadeDrive(driveTrainPIDController.calculate(encoderVal)); //.calculate -> retorna a próxima saída do controlador PID.
+      chassis.arcadeDrive(driveTrainPIDController.calculate(encoderVal), 0); //.calculate -> retorna a próxima saída do controlador PID.
     }
   }
 
