@@ -1,0 +1,5 @@
+Código responsável por:
+Controle de 1 SparkMax (individual - sem movimentacao) utlizando o analógico esquerdo do Joystick.
+  
+Classes: CADSparkMax (importada online), XboxController.
+Métodos: set()
