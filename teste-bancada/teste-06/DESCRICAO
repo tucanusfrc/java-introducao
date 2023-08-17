@@ -1,0 +1,5 @@
+Este código possui,
+2 SparkMax ligados pelo método DiferentialDrive (Não foi necessário agrupa-los em left e right já que eram apenas dois)
+foi invertido o motor direito utilizando o método setInverted() como de costume.
+Ambos foram controlados por um joystick e os seus 2 analógicos utilizando o método tankdrive(), que recebe dois valores,
+o controlador do motorEsquerdo e do motorDireito.
