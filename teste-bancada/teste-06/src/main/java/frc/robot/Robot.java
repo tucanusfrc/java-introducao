@@ -3,12 +3,11 @@ package frc.robot;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-//Correcao de erro: Utilizei CANSparkMax ao inves de PWMSparkMax, pois nao utlizamos PWM.
 
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
@@ -16,18 +15,20 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  private final int m_MotorID = 1;
-  private Joystick m_Stick;
+  CANSparkMax m_leftMotor = new CANSparkMax(5, MotorType.kBrushless);
+  CANSparkMax m_rightMotor = new CANSparkMax(1, MotorType.kBrushless);
+  private XboxController m_StickController;
 
-  CANSparkMax m_Motor = new CANSparkMax(m_MotorID, MotorType.kBrushless);
-
+  DifferentialDrive chassi = new DifferentialDrive(m_leftMotor, m_rightMotor);
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    m_Stick = new Joystick(0);
+    
+    m_rightMotor.setInverted(true);
+    m_StickController = new XboxController(0);
   }
 
   @Override
@@ -38,6 +39,7 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+
   }
 
   /** This function is called periodically during autonomous. */
@@ -61,9 +63,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_Motor.set(m_Stick.getY());
+    chassi.tankDrive(m_StickController.getLeftY(), m_StickController.getRightY());
   }
-
+  
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {}

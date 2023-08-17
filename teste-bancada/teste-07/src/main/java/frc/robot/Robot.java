@@ -1,14 +1,9 @@
+
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-//Correcao de erro: Utilizei CANSparkMax ao inves de PWMSparkMax, pois nao utlizamos PWM.
 
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
@@ -16,18 +11,13 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  private final int m_MotorID = 1;
-  private Joystick m_Stick;
 
-  CANSparkMax m_Motor = new CANSparkMax(m_MotorID, MotorType.kBrushless);
 
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
+    m_chooser.addOption("My Auto", kCustomAuto);https://software-metadata.revrobotics.com/REVLib-2023.jsonhttps://software-metadata.revrobotics.com/REVLib-2023.jsonhttps://software-metadata.revrobotics.com/REVLib-2023.json
     SmartDashboard.putData("Auto choices", m_chooser);
-
-    m_Stick = new Joystick(0);
   }
 
   @Override
@@ -60,9 +50,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    m_Motor.set(m_Stick.getY());
-  }
+  public void teleopPeriodic() {}
 
   /** This function is called once when the robot is disabled. */
   @Override
