@@ -1,41 +1,33 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
+//Correcao de erro: Utilizei CANSparkMax ao inves de PWMSparkMax, pois nao utlizamos PWM.
+
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  private Joystick motorStick;
-  private JoystickButton button;
-  private final MotorController m_Motor = new PWMSparkMax(1);
+  private final int m_MotorID = 1;
+  private Joystick m_Stick;
+
+  CANSparkMax m_Motor = new CANSparkMax(m_MotorID, MotorType.kBrushless);
 
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    
-    motorStick = new Joystick(0);
-    button = new JoystickButton(motorStick, 3);
+
+    m_Stick = new Joystick(0);
   }
 
   /**
@@ -86,12 +78,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double speed = 0.6;
-
-    if(motorStick.getRawButton(button)){
-    m_Motor.set(speed);
-    }
-  } 
+    m_Motor.set(m_Stick.getY());
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
