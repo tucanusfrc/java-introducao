@@ -1,0 +1,5 @@
+Código responsável por:
+Controle de 2 SparkMax INDEPENDENTES, sendo controlados pelo mesmo Joystick mas por funcionalidades diferentes.
+Motor menor é controlado pelo Left Trigger do Joystick, que retorna valores de 0 a 1, por isso utilizado no método set()
+Motor maior é controlado pelo botão A, como o botão não retorna valores (-1 a 1) foi utilizado uma condicional e um valor
+fixo de 0.6 para speed.
