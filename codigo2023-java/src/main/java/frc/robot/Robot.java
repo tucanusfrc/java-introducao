@@ -5,10 +5,12 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
@@ -34,13 +36,25 @@ public class Robot extends TimedRobot {
 
   DifferentialDrive chassi =  new DifferentialDrive(m_left, m_right);
 
+  private XboxController m_driveStick;
+  private XboxController m_garraStick;
+
   @Override
   public void robotInit() {
    
-    //m_rightBack.setInverted(true);
-    //m_rightFrontal.setInverted(true);
+    m_rightBack.setInverted(true);
+    m_rightFrontal.setInverted(true);
 
+    m_estica.setIdleMode(IdleMode.kBrake);
+    m_elevador.setIdleMode(IdleMode.kBrake);
+    m_garra.setIdleMode(IdleMode.kBrake);
 
+    m_driveStick = new XboxController(0);
+    m_garraStick = new XboxController(1);
+
+    //CLASSE FIM DE CURSO - Procurar
+    //boolean travaSuperior;
+    //boolean travaInferior;
   }
 
   @Override
@@ -56,7 +70,29 @@ public class Robot extends TimedRobot {
   public void teleopInit() {}
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    //MOVIMENTACAO
+    chassi.tankDrive(m_driveStick.getLeftY(), m_driveStick.getRightY());
+
+    //GARRA
+    m_elevador.set(m_garraStick.getRightY()); //Sug: Limitar velocidade multiplicando por decimais.
+
+    m_garra.set(m_garraStick.getRightTriggerAxis()*0.6);
+    m_garra.set(-m_garraStick.getLeftTriggerAxis()*0.6);
+    
+    if(m_garraStick.getXButton()) {
+      m_estica.set(1);
+    } else {
+      m_estica.set(0);
+    }
+
+    if(m_garraStick.getBButton()) {
+      m_estica.set(-1);
+    } else {
+      m_estica.set(0);
+    }
+
+  }
 
   @Override
   public void disabledInit() {}
