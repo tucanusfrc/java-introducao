@@ -8,11 +8,12 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,6 +23,8 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
  */
 public class Robot extends TimedRobot {
 
+  CANSparkMax m_garra = new CANSparkMax(7, MotorType.kBrushless);
+  
   CANSparkMax m_leftFrontal = new CANSparkMax(4, MotorType.kBrushless);
   CANSparkMax m_leftBack = new CANSparkMax(1, MotorType.kBrushless);
   CANSparkMax m_rightFrontal = new CANSparkMax(2, MotorType.kBrushless);
@@ -29,7 +32,10 @@ public class Robot extends TimedRobot {
 
   CANSparkMax m_estica = new CANSparkMax(5, MotorType.kBrushless);
   CANSparkMax m_elevador = new CANSparkMax(6, MotorType.kBrushless);
-  CANSparkMax m_garra = new CANSparkMax(7, MotorType.kBrushless);
+
+  //FIM DE CURSO
+  DigitalInput travaSuperior = new DigitalInput(0);
+  DigitalInput travaInferior = new DigitalInput(1);
 
   MotorControllerGroup m_left = new MotorControllerGroup(m_leftBack, m_leftFrontal);
   MotorControllerGroup m_right = new MotorControllerGroup(m_rightBack, m_rightFrontal);
@@ -41,13 +47,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-   
+
     m_rightBack.setInverted(true);
     m_rightFrontal.setInverted(true);
+    m_leftBack.setInverted(false);
+    m_leftFrontal.setInverted(false);
 
     m_estica.setIdleMode(IdleMode.kBrake);
     m_elevador.setIdleMode(IdleMode.kBrake);
-    m_garra.setIdleMode(IdleMode.kBrake);
+    m_garra.setIdleMode(IdleMode.kBrake); 
 
     m_driveStick = new XboxController(0);
     m_garraStick = new XboxController(1);
@@ -71,6 +79,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    //FIM DE CURSO
+    boolean estadoFimCursoSuperior = travaSuperior.get();
+    boolean estadoFimCursoInferior = travaInferior.get();
+
     //MOVIMENTACAO
     chassi.tankDrive(m_driveStick.getLeftY(), m_driveStick.getRightY());
 
@@ -91,7 +103,6 @@ public class Robot extends TimedRobot {
     } else {
       m_estica.set(0);
     }
-
   }
 
   @Override
