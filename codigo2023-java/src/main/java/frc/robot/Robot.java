@@ -4,9 +4,8 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -16,23 +15,16 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class Robot extends TimedRobot {
-
-  CANSparkMax m_garra = new CANSparkMax(7, MotorType.kBrushless);
   
-  CANSparkMax m_leftFrontal = new CANSparkMax(4, MotorType.kBrushless);
-  CANSparkMax m_leftBack = new CANSparkMax(1, MotorType.kBrushless);
-  CANSparkMax m_rightFrontal = new CANSparkMax(2, MotorType.kBrushless);
-  CANSparkMax m_rightBack = new CANSparkMax(3, MotorType.kBrushless);
+  WPI_VictorSPX m_leftFrontal = new WPI_VictorSPX(4);
+  WPI_VictorSPX m_leftBack = new WPI_VictorSPX(1);
+  WPI_VictorSPX m_rightFrontal = new WPI_VictorSPX(2);
+  WPI_VictorSPX m_rightBack = new WPI_VictorSPX(3);
 
-  CANSparkMax m_estica = new CANSparkMax(5, MotorType.kBrushless);
-  CANSparkMax m_elevador = new CANSparkMax(6, MotorType.kBrushless);
+  WPI_VictorSPX m_estica = new WPI_VictorSPX(5);
+  WPI_VictorSPX m_elevador = new WPI_VictorSPX(6);
+  WPI_VictorSPX m_garra = new WPI_VictorSPX(7);
 
   //FIM DE CURSO
   DigitalInput travaSuperior = new DigitalInput(8);
@@ -56,17 +48,12 @@ public class Robot extends TimedRobot {
     m_rightFrontal.setInverted(true);
     m_leftBack.setInverted(false);
     m_leftFrontal.setInverted(false);
-
-    m_estica.setIdleMode(IdleMode.kBrake);
-    m_elevador.setIdleMode(IdleMode.kBrake);
-    m_garra.setIdleMode(IdleMode.kBrake); 
+    
+    m_estica.setNeutralMode(NeutralMode.Brake);
+    m_garra.setNeutralMode(NeutralMode.Brake);
 
     m_driveStick = new XboxController(0);
     m_garraStick = new XboxController(1);
-
-    //CLASSE FIM DE CURSO - Procurar
-    //boolean travaSuperior;
-    //boolean travaInferior;
   }
 
   @Override
@@ -81,11 +68,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     if(timer.get()<3){
-      chassi.tankDrive(0.1, 0.1);
+      chassi.tankDrive(0.5, 0.5);
     } else if (timer.get()>3 && timer.get()<6){
       chassi.tankDrive(0.2, -0.2);
     } else{
-      chassi.stopMotor();
+      chassi.tankDrive(0, 0);
     }
   }
 
@@ -98,6 +85,9 @@ public class Robot extends TimedRobot {
     boolean estadoFimCursoSuperior = travaSuperior.get();
     boolean estadoFimCursoInferior = travaInferior.get();
     double v_elevador = m_garraStick.getRightY();
+
+    SmartDashboard.putBoolean("travaSuperior: ", estadoFimCursoSuperior);
+    SmartDashboard.putBoolean("travaInferior: ", estadoFimCursoInferior);
     
     if (v_elevador < 0 && !estadoFimCursoInferior){
       m_elevador.set(v_elevador);
@@ -112,11 +102,11 @@ public class Robot extends TimedRobot {
     }
 
     //MOVIMENTACAO
-    chassi.tankDrive(m_driveStick.getLeftY(), m_driveStick.getRightY());
+    chassi.tankDrive(-m_driveStick.getLeftY(), -m_driveStick.getRightY());
 
     //GARRA
-    m_garra.set(m_garraStick.getRightTriggerAxis()*0.6);
-    m_garra.set(-m_garraStick.getLeftTriggerAxis()*0.6);
+    m_garra.set(m_garraStick.getRightTriggerAxis());
+    m_garra.set(-m_garraStick.getLeftTriggerAxis());
     
     if(m_garraStick.getXButton()) {
       m_estica.set(1);
