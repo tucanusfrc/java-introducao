@@ -1,25 +1,24 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
 
-  WPI_VictorSPX m_estica = new WPI_VictorSPX(5);
+  WPI_VictorSPX m_elevador = new WPI_VictorSPX(6);
+
+  DigitalInput travaSuperior = new DigitalInput(8);
+  DigitalInput travaInferior = new DigitalInput(0);
+
   public XboxController controllerGarra;
 
   @Override
   public void robotInit() {
-    
     controllerGarra = new XboxController(0);
-    m_estica.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
@@ -36,14 +35,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    if (controllerGarra.getAButton()) {
-      m_estica.set(1);
-    } else if (controllerGarra.getBButton()) {
-      m_estica.set(-1);
+    SmartDashboard.putBoolean("Trava Superior: ", travaSuperior.get());
+    SmartDashboard.putBoolean("Trava Inferior: ", travaInferior.get());
+    
+    if(controllerGarra.getRightY()>0 && !travaSuperior.get()) {
+      m_elevador.set(controllerGarra.getRightY());
+    } else if (controllerGarra.getRightY()<0 && !travaInferior.get()) {
+      m_elevador.set(controllerGarra.getRightY());
     } else {
-      m_estica.set(0);
+      m_elevador.set(0);
     }
-
   }
 
   @Override
